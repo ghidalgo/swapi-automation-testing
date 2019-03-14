@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Testing_Arena" preserve-order="true" configfailurepolicy="skip">
+    <test name="whats your fancy?">
+        <classes>
+            <class name="api.ApiTests">
+                <methods>
+                    <include name="peopleTest"></include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
