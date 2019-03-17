@@ -10,3 +10,4 @@ out
 /gradlew.bat
 /gradlew
 /.circleci/config.yml
+swapi-automation-testing.iml

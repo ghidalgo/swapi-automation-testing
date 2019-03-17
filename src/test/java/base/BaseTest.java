@@ -14,7 +14,7 @@ import utilities.Urls;
 @Listeners(value = TestResultListener.class)
 public class BaseTest {
 
-    private static Logger logger = LogManager.getLogger(BaseTest.class);;
+    private static Logger logger = LogManager.getLogger(BaseTest.class);
     protected static Time timeObj;
     protected static Requests apiRequestObj;
     protected static Urls urls;
