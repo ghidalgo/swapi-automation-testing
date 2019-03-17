@@ -27,16 +27,19 @@ public class Requests {
                 .build();
     }
 
-    public void getFilms(String filmNumber) {
+    public Response getFilms(String filmNumber) {
         logger.info("*** /film/{number} ***\n");
 
         requestSpec();
-
-        given()
+        Response response = given()
                 .body(requestSpec)
                 .when()
                 .get(url.FILM + filmNumber)
-                .prettyPeek();
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+        return response;
     }
 
 
@@ -44,7 +47,6 @@ public class Requests {
         logger.info("*** GET Planet ***\n");
 
         requestSpec();
-
         Response response = given()
                 .spec(requestSpec)
                 .when()
@@ -53,16 +55,13 @@ public class Requests {
                 .then()
                 .extract()
                 .response();
-
         return response;
     }
 
     public Response getPeople(String peopleNumber) {
         logger.info("*** GET People ***\n");
 
-        logger.warn(url.PEOPLE + peopleNumber);
         requestSpec();
-
         Response response = given()
                 .spec(requestSpec)
                 .when()
@@ -74,38 +73,50 @@ public class Requests {
         return response;
     }
 
-    public void getSpecies(String speciesNumber) {
+    public Response getSpecies(String speciesNumber) {
         logger.info("*** GET Species ***\n");
 
         requestSpec();
-
-        given()
+        Response response = given()
                 .spec(requestSpec)
                 .when()
-                .get(url.SPECIES + speciesNumber).prettyPeek();
+                .get(url.SPECIES + speciesNumber)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+        return response;
     }
 
-    public void getStarships(String shipNumber) {
+    public Response getStarships(String shipNumber) {
         logger.info("*** GET Starships ***\n");
 
         requestSpec();
-
-        given()
+        Response response = given()
                 .spec(requestSpec)
                 .when()
-                .get(url.STARSHIPS + shipNumber).prettyPeek();
+                .get(url.STARSHIPS + shipNumber)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+        return response;
     }
 
 
-    public void getVehicles(String vehicleNumber) {
+    public Response getVehicles(String vehicleNumber) {
         logger.info("*** GET Vehicles ***\n");
 
         requestSpec();
-
-        given()
+        Response response = given()
                 .spec(requestSpec)
                 .when()
-                .get(url.VEHICLES + vehicleNumber).prettyPeek();
+                .get(url.VEHICLES + vehicleNumber)
+                .prettyPeek()
+                .then()
+                .extract()
+                .response();
+        return response;
     }
 }
 

@@ -21,18 +21,26 @@ public class ApiTests extends BaseTest {
         String name = getPeople.path("name");
         String homeworld = getPeople.path("homeworld");
         logger.warn("homeworld: " + homeworld);
+        String planet = getRegMatch(homeworld);
+
+        assertEquals(getPeople.getStatusCode(), 200);
+        assertEquals(name.toLowerCase(), "luke skywalker");
+
+        Response getPlanet = apiRequestObj.getPlanets(planet);
+        String pn = getPlanet.path("name");
+        assertEquals(pn, "Tatooine");
+    }
+
+    public String getRegMatch(String type) {
+
         Pattern p = Pattern.compile("\\/\\d+\\/$");
-        Matcher m = p.matcher(homeworld);
+        Matcher m = p.matcher(type);
         String hw = "";
         if (m.find()) {
             hw = m.group(0);
             logger.warn(hw);
         }
-
-        assertEquals(getPeople.getStatusCode(), 200);
-        assertEquals(name.toLowerCase(), "luke skywalker");
-
-        Response getPlanet = apiRequestObj.getPlanets(hw);
+        return hw;
     }
 }
 
