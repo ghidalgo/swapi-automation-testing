@@ -2,7 +2,6 @@
 .idea
 .gradle
 out
-test-automation.iml
 
 # Library configuration lives here, keep it.
 !.idea/libraries
