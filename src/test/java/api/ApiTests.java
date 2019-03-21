@@ -6,41 +6,78 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.testng.Assert.assertEquals;
 
 public class ApiTests extends BaseTest {
 
-    private static Logger logger = LogManager.getLogger(ApiTests.class);
+    static Logger logger = LogManager.getLogger(ApiTests.class);
 
     @Test
     public void lukeSkywalkerTest() {
-        Response getPeople = apiRequestObj.getPeople("/1");
-        String name = getPeople.path("name");
-        String homeworld = getPeople.path("homeworld");
-        logger.warn("homeworld: " + homeworld);
-        String planet = getRegMatch(homeworld);
 
-        assertEquals(getPeople.getStatusCode(), 200);
+        Response getLuke = request.getPeople("/1");
+        assertEquals(getLuke.getStatusCode(), 200);
+        String name = getLuke.path("name");
         assertEquals(name.toLowerCase(), "luke skywalker");
 
-        Response getPlanet = apiRequestObj.getPlanets(planet);
+        String lukesHomeworld = getLuke.path("homeworld");
+        logger.warn("homeworld: " + lukesHomeworld);
+        String planet = common.getRegMatch(lukesHomeworld);
+
+        Response getPlanet = request.getPlanets(planet);
         String pn = getPlanet.path("name");
         assertEquals(pn, "Tatooine");
     }
 
-    public String getRegMatch(String type) {
+    @Test
+    public void allPeepFindBobaFettTest() {
+        boolean found = false;
 
-        Pattern p = Pattern.compile("\\/\\d+\\/$");
-        Matcher m = p.matcher(type);
-        String hw = "";
-        if (m.find()) {
-            hw = m.group(0);
-            logger.warn(hw);
-        }
-        return hw;
+
+        // Response getAllPeople = request.getPeople("/");
+        findUser("boba fett");
+
+        //logger.warn("here here here here" + blah);
+    }
+
+    public void findUser(String character) {
+
+        boolean next = true;
+        int p = 1;
+        do {
+            String nextPageUrl;
+            Response all = request.getPeople("?page=" + p);
+            nextPageUrl = all.path("next");
+            logger.info("Next Page url: " + nextPageUrl);
+
+            for (int i = 0; i < 9; i++) {
+                String name = all.path("results[" + i + "].name");
+                if (name != null) {
+                    logger.warn(name);
+                }
+
+                // if (name.equals(character)) {
+                // }
+            }
+            if (nextPageUrl == null) {
+                next = false;
+            }
+
+            p++;
+            logger.info("Is there a next page?: " + next);
+
+        } while (next);
     }
 }
 
+/*
+        while (next != null && testing != null );
+          //  while (response.path("next") != null) {
+              //Response blah =  request.getPeople("/?page=" + i);
+
+
+
+           // }
+      //  }
+        //return huh;
+        */

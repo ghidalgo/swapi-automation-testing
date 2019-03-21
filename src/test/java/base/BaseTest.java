@@ -10,21 +10,24 @@ import org.testng.annotations.Test;
 import utilities.TestResultListener;
 import utilities.Time;
 import utilities.Urls;
+import utilities.Common;
 
 @Listeners(value = TestResultListener.class)
 public class BaseTest {
 
     private static Logger logger = LogManager.getLogger(BaseTest.class);
-    protected static Time timeObj;
-    protected static Requests apiRequestObj;
+    protected static Time time;
+    protected static Requests request;
     protected static Urls urls;
+    protected static Common common;
 
     @BeforeSuite
     public void startUp() {
         logger.info("Setup");
         urls = new Urls();
-        timeObj = new Time();
-        apiRequestObj = new Requests();
+        time = new Time();
+        request = new Requests();
+        common = new Common();
     }
 
     @Test

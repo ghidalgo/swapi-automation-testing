@@ -66,7 +66,7 @@ public class Requests {
                 .spec(requestSpec)
                 .when()
                 .get(url.PEOPLE + peopleNumber)
-                .prettyPeek()
+                //.prettyPeek()
                 .then()
                 .extract()
                 .response();
