@@ -30,54 +30,42 @@ public class ApiTests extends BaseTest {
     }
 
     @Test
-    public void allPeepFindBobaFettTest() {
+    public void bobaFettTest() {
         boolean found = false;
-
-
-        // Response getAllPeople = request.getPeople("/");
-        findUser("boba fett");
-
-        //logger.warn("here here here here" + blah);
+        String characterSearchResult = searchForCharacter("boba fett");
+        logger.info("Search resulted in: " + characterSearchResult);
+        // add next if search contains https://swapi.co/ then send to common.regex stuff and pull it out
     }
 
-    public void findUser(String character) {
+    public String searchForCharacter(String character) {
 
         boolean next = true;
         int p = 1;
+        String characterUrl = "Character Not Found";
+
         do {
             String nextPageUrl;
-            Response all = request.getPeople("?page=" + p);
+            Response all = request.getPeople("/?page=" + p);
             nextPageUrl = all.path("next");
             logger.info("Next Page url: " + nextPageUrl);
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i <= 9; i++) {
                 String name = all.path("results[" + i + "].name");
                 if (name != null) {
                     logger.warn(name);
                 }
-
-                // if (name.equals(character)) {
-                // }
+                if (name.toLowerCase().equals(character)) {
+                    characterUrl = all.path("results[" + i + "].url");
+                    logger.info("*** Character Found ***");
+                    return characterUrl;
+                }
+                if (nextPageUrl == null) {
+                    next = false;
+                }
             }
-            if (nextPageUrl == null) {
-                next = false;
-            }
-
             p++;
             logger.info("Is there a next page?: " + next);
-
         } while (next);
+        return characterUrl;
     }
 }
-
-/*
-        while (next != null && testing != null );
-          //  while (response.path("next") != null) {
-              //Response blah =  request.getPeople("/?page=" + i);
-
-
-
-           // }
-      //  }
-        //return huh;
-        */
