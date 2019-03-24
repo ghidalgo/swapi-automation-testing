@@ -59,7 +59,7 @@ public class Requests {
     }
 
     public Response getPeople(String peopleNumber) {
-        logger.info("*** GET People ***\n");
+        //logger.info("*** GET People ***\n");
 
         requestSpec();
         Response response = given()

@@ -4,9 +4,13 @@ import base.BaseTest;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 public class ApiTests extends BaseTest {
 
@@ -31,41 +35,52 @@ public class ApiTests extends BaseTest {
 
     @Test
     public void bobaFettTest() {
-        boolean found = false;
-        String characterSearchResult = searchForCharacter("boba fett");
-        logger.info("Search resulted in: " + characterSearchResult);
-        // add next if search contains https://swapi.co/ then send to common.regex stuff and pull it out
+
+
+        HashMap searchResult = searchForCharacter("boba fett");
+        JSONObject jsonObject = new JSONObject(searchResult);
+
+
+        logger.info("jsonObject: " + jsonObject);
+        if (jsonObject.isEmpty()) {
+            fail("Character Not Found");
+        } else {
+            // add next if search contains https://swapi.co/ then send to common.regex stuff and pull it out
+
+
+        }
     }
 
-    public String searchForCharacter(String character) {
+
+    public HashMap searchForCharacter(String character) {
 
         boolean next = true;
         int p = 1;
-        String characterUrl = "Character Not Found";
+        HashMap<String, String> characterResult = new HashMap<>();
+        logger.info("Search for a character named: " + character);
 
         do {
             String nextPageUrl;
             Response all = request.getPeople("/?page=" + p);
             nextPageUrl = all.path("next");
-            logger.info("Next Page url: " + nextPageUrl);
 
             for (int i = 0; i <= 9; i++) {
                 String name = all.path("results[" + i + "].name");
-                if (name != null) {
-                    logger.warn(name);
+                if (name == null) {
+                    logger.warn("A character named " + character + " was NOT found...");
+                    break;
                 }
                 if (name.toLowerCase().equals(character)) {
-                    characterUrl = all.path("results[" + i + "].url");
-                    logger.info("*** Character Found ***");
-                    return characterUrl;
+                    characterResult = all.path("results[" + i + "]");
+                    logger.info("*** Found a character named " + name + " ***");
+                    return characterResult;
                 }
                 if (nextPageUrl == null) {
                     next = false;
                 }
             }
             p++;
-            logger.info("Is there a next page?: " + next);
         } while (next);
-        return characterUrl;
+        return characterResult;
     }
 }
