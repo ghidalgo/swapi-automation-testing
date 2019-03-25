@@ -37,14 +37,17 @@ public class ApiTests extends BaseTest {
     public void bobaFettTest() {
 
 
-        HashMap searchResult = searchForCharacter("boba fett");
-        JSONObject jsonObject = new JSONObject(searchResult);
+        JSONObject searchResult = searchForCharacter("boba fett");
 
-
-        logger.info("jsonObject: " + jsonObject);
-        if (jsonObject.isEmpty()) {
+        logger.info("jsonObject: " + searchResult);
+        if (searchResult.isEmpty()) {
             fail("Character Not Found");
         } else {
+
+            logger.info("homeworld: " + searchResult.get("homeworld"));
+            logger.info("homeworld: " + searchResult.get("films"));
+
+
             // add next if search contains https://swapi.co/ then send to common.regex stuff and pull it out
 
 
@@ -52,7 +55,7 @@ public class ApiTests extends BaseTest {
     }
 
 
-    public HashMap searchForCharacter(String character) {
+    public JSONObject searchForCharacter(String character) {
 
         boolean next = true;
         int p = 1;
@@ -66,6 +69,8 @@ public class ApiTests extends BaseTest {
 
             for (int i = 0; i <= 9; i++) {
                 String name = all.path("results[" + i + "].name");
+
+
                 if (name == null) {
                     logger.warn("A character named " + character + " was NOT found...");
                     break;
@@ -73,7 +78,7 @@ public class ApiTests extends BaseTest {
                 if (name.toLowerCase().equals(character)) {
                     characterResult = all.path("results[" + i + "]");
                     logger.info("*** Found a character named " + name + " ***");
-                    return characterResult;
+                    return new JSONObject(characterResult);
                 }
                 if (nextPageUrl == null) {
                     next = false;
@@ -81,6 +86,6 @@ public class ApiTests extends BaseTest {
             }
             p++;
         } while (next);
-        return characterResult;
+        return new JSONObject(characterResult);
     }
 }
