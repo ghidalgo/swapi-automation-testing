@@ -4,7 +4,6 @@ import base.BaseTest;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -37,55 +36,58 @@ public class ApiTests extends BaseTest {
     public void bobaFettTest() {
 
 
-        JSONObject searchResult = searchForCharacter("boba fett");
+        HashMap searchResult = searchForCharacter("boba fett");
 
         logger.info("jsonObject: " + searchResult);
         if (searchResult.isEmpty()) {
             fail("Character Not Found");
         } else {
 
-            logger.info("homeworld: " + searchResult.get("homeworld"));
-            logger.info("homeworld: " + searchResult.get("films"));
+            logger.info("films: " + searchResult.get("films"));
+            String getPlanet = request.getPlanets(common.getRegMatch(searchResult.get("homeworld").toString())).path("name");
 
-
-            // add next if search contains https://swapi.co/ then send to common.regex stuff and pull it out
-
-
+            logger.info(getPlanet);
+            assertEquals(getPlanet.toLowerCase(), "kamino");
         }
     }
 
 
-    public JSONObject searchForCharacter(String character) {
+    public HashMap searchForCharacter(String character) {
 
         boolean next = true;
         int p = 1;
         HashMap<String, String> characterResult = new HashMap<>();
-        logger.info("Search for a character named: " + character);
 
-        do {
-            String nextPageUrl;
-            Response all = request.getPeople("/?page=" + p);
-            nextPageUrl = all.path("next");
+        if (character.equals("")) {
+            logger.info("No character provided. Exiting...");
+        } else {
+            logger.info("Search for a character named: " + character);
 
-            for (int i = 0; i <= 9; i++) {
-                String name = all.path("results[" + i + "].name");
+            do {
+                Response all = request.getPeople("/?page=" + p);
+                String nextPageUrl = all.path("next");
+                String name = "";
 
+                for (int i = 0; i <= 9; i++) {
+                    name = all.path("results[" + i + "].name");
+                    logger.warn(name);
 
-                if (name == null) {
-                    logger.warn("A character named " + character + " was NOT found...");
-                    break;
+                    if (name == null) {
+                        logger.warn("A character named " + character + " was NOT found...");
+                        break;
+                    } else if (name.toLowerCase().equals(character) && name != null) {
+                        characterResult = all.path("results[" + i + "]");
+                        logger.info("*** Found a character named " + name + " ***");
+                        break;
+                    }
                 }
-                if (name.toLowerCase().equals(character)) {
-                    characterResult = all.path("results[" + i + "]");
-                    logger.info("*** Found a character named " + name + " ***");
-                    return new JSONObject(characterResult);
-                }
-                if (nextPageUrl == null) {
+                if (nextPageUrl == null || name.toLowerCase().equals(character)) {
                     next = false;
                 }
+                p++;
             }
-            p++;
-        } while (next);
-        return new JSONObject(characterResult);
+            while (next);
+        }
+        return characterResult;
     }
 }
