@@ -17,7 +17,6 @@ public class ApiTests extends BaseTest {
 
     @Test
     public void lukeSkywalkerTest() {
-
         Response getLuke = request.getPeople("/1");
         assertEquals(getLuke.getStatusCode(), 200);
         String name = getLuke.path("name");
@@ -34,60 +33,18 @@ public class ApiTests extends BaseTest {
 
     @Test
     public void bobaFettTest() {
+        String character = "boba fett";
+        String expectedPlanet = "kamino";
+        HashMap searchResult = common.searchForCharacter(character);
 
-
-        HashMap searchResult = searchForCharacter("boba fett");
-
-        logger.info("jsonObject: " + searchResult);
         if (searchResult.isEmpty()) {
             fail("Character Not Found");
         } else {
-
             logger.info("films: " + searchResult.get("films"));
-            String getPlanet = request.getPlanets(common.getRegMatch(searchResult.get("homeworld").toString())).path("name");
-
-            logger.info(getPlanet);
-            assertEquals(getPlanet.toLowerCase(), "kamino");
+            String homeUrl = searchResult.get("homeworld").toString();
+            Response getPlanet = request.getPlanets(common.getRegMatch(homeUrl));
+            String planetName = getPlanet.path("name");
+            assertEquals(planetName.toLowerCase(), expectedPlanet);
         }
-    }
-
-
-    public HashMap searchForCharacter(String character) {
-
-        boolean next = true;
-        int p = 1;
-        HashMap<String, String> characterResult = new HashMap<>();
-
-        if (character.equals("")) {
-            logger.info("No character provided. Exiting...");
-        } else {
-            logger.info("Search for a character named: " + character);
-
-            do {
-                Response all = request.getPeople("/?page=" + p);
-                String nextPageUrl = all.path("next");
-                String name = "";
-
-                for (int i = 0; i <= 9; i++) {
-                    name = all.path("results[" + i + "].name");
-                    logger.warn(name);
-
-                    if (name == null) {
-                        logger.warn("A character named " + character + " was NOT found...");
-                        break;
-                    } else if (name.toLowerCase().equals(character) && name != null) {
-                        characterResult = all.path("results[" + i + "]");
-                        logger.info("*** Found a character named " + name + " ***");
-                        break;
-                    }
-                }
-                if (nextPageUrl == null || name.toLowerCase().equals(character)) {
-                    next = false;
-                }
-                p++;
-            }
-            while (next);
-        }
-        return characterResult;
     }
 }

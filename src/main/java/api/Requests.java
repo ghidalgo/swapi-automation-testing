@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import utilities.Time;
 import utilities.Urls;
 
 import static io.restassured.RestAssured.given;
@@ -15,10 +14,6 @@ public class Requests {
     private Logger logger = LogManager.getLogger(Requests.class);
     private RequestSpecification requestSpec;
     private Urls url = new Urls();
-    private Time timeObj;
-
-    public Requests() {
-    }
 
     public void requestSpec() {
         requestSpec = new RequestSpecBuilder()
