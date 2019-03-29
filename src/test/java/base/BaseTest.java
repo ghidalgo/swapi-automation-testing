@@ -23,7 +23,7 @@ public class BaseTest {
 
     @BeforeSuite
     public void startUp() {
-        logger.info("Setup");
+   //     logger.info("Setup");
         urls = new Urls();
         time = new Time();
         request = new Requests();

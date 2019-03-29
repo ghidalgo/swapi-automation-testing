@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="API_Tests" preserve-order="true" >
+<suite name="Character Tests" preserve-order="true" >
     <test name="Luke Skywalker">
         <classes>
-            <class name="api.ApiTests">
+            <class name="api.ApiTests" >
                 <methods>
                     <include name="lukeSkywalkerTest"></include>
                 </methods>
@@ -16,6 +16,15 @@
             <class name="api.ApiTests">
                 <methods>
                     <include name="bobaFettTest"></include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Jabba The Hutt">
+        <classes>
+            <class  name="api.ApiTests">
+                <methods>
+                    <include name="jabbaTheHuttTest"></include>
                 </methods>
             </class>
         </classes>

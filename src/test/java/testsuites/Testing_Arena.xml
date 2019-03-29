@@ -1,13 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Testing_Arena" preserve-order="true" configfailurepolicy="skip">
-    <test name="whats your fancy?">
+
+    <test name="People">
+        <groups>
+            <run>
+                <exclude name="film"/>
+            </run>
+        </groups>
         <classes>
-            <class name="api.ApiTests">
-                <methods>
-                    <include name="peopleTest"></include>
-                </methods>
-            </class>
+            <class name="api.ApiTests"/>
+        </classes>
+    </test>
+
+    <test name="All">
+        <groups>
+            <define name="all">
+                <include name="people"/>
+                <include name="film"/>
+            </define>
+            <run>
+                <include name="all"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="api.ApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Film">
+        <groups>
+            <run>
+                <exclude name="people"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="api.ApiTests"/>
         </classes>
     </test>
 </suite>

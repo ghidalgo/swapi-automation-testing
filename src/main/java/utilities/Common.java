@@ -4,10 +4,13 @@ import api.Requests;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static org.testng.Assert.assertEquals;
+
 
 public class Common {
     private static Logger logger = LogManager.getLogger(Common.class);
@@ -16,15 +19,22 @@ public class Common {
 
         Pattern p = Pattern.compile("\\/\\d+\\/$");
         Matcher m = p.matcher(type);
-        String hw = "";
+        String addOn = "";
         if (m.find()) {
-            hw = m.group(0);
-            logger.warn(hw);
+            addOn = m.group(0);
+            logger.warn(addOn);
         }
-        return hw;
+        return addOn;
     }
 
-    public HashMap searchForCharacter(String character) {
+    /*
+    public Object getIndividualFilms(Object filmArray) {
+        Object thing = "huh";
+        return thing;
+    }
+    */
+
+    public JSONObject searchForCharacter(String character) {
         boolean next = true;
         int p = 1;
         HashMap<String, String> characterResult = new HashMap<>();
@@ -37,11 +47,14 @@ public class Common {
 
             do {
                 Response all = request.getPeople("/?page=" + p);
+                assertEquals(all.getStatusCode(), 200);
+
                 String nextPageUrl = all.path("next");
                 String name = "";
 
                 for (int i = 0; i <= 9; i++) {
-                    name = all.path("results[" + i + "].name");
+                    name = all.path("results[" + i + "].name").toString().toLowerCase();
+                    //logger.warn(name);
 
                     if (name == null) {
                         logger.warn("A character named " + character + " was NOT found...");
@@ -59,6 +72,6 @@ public class Common {
             }
             while (next);
         }
-        return characterResult;
+        return new JSONObject(characterResult);
     }
 }
